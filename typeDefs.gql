@@ -27,11 +27,24 @@ type Message {
     messageUser: User!
 }
 
+type Token {
+    token: String!
+}
+
+type PostsPage {
+    posts: [Post]
+    hasMore: Boolean
+    infiniteScrollPosts: PostsPage
+}
+
 type Query {
+    getCurrentUser: User
     getPosts: [Post]
+    infiniteScrollPosts(pageNum: Int!, pageSize: Int!): PostsPage 
 }
 
 type Mutation {
     addPost(title: String!, imageUrl:String!, categories: [String]!, description: String!, creatorId: ID!): Post!
-    signupUser(username: String!, email: String!, password: String!): User!
+    signupUser(username: String!, email: String!, password: String!): Token
+    signinUser(username: String!, password:String!): Token
 }

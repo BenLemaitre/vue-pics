@@ -20,6 +20,16 @@
               {{ item.title }}
             </v-list-item-content>
           </v-list-item>
+
+          <!-- Signout button -->
+          <v-list-item ripple v-if="user" @click="handleSignoutUser" to="/signout">
+            <v-list-item-icon>
+              <v-icon>exit_to_app</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              Signout
+            </v-list-item-content>
+          </v-list-item>
         </v-list>
       </v-navigation-drawer>
 
@@ -48,8 +58,25 @@
             <v-icon class="hidden-sm-only" left>{{ item.icon }}</v-icon>
             {{ item.title }}
           </v-btn>
+
+          <!-- Profile button -->
+          <v-btn v-if="user" text to="/profile">
+            <v-icon class="hidden-sm-only" left>account_box</v-icon>
+            <v-badge right color="blue darken2">
+              <!-- <span slot="badge">1</span> -->
+              Profile
+            </v-badge>
+          </v-btn>
+
+          <!-- Signout button -->
+          <v-btn v-if="user" text @click="handleSignoutUser">
+            <v-icon class="hidden-sm-only" left>exit_to_app</v-icon>
+            Signout
+          </v-btn>
+
         </v-toolbar-items>
       </v-app-bar>
+
 
       <!-- App Content -->
       <main>
@@ -57,36 +84,90 @@
           <transition name="fade">
             <router-view/>
           </transition>
+
+          <!-- Auth snackbar -->
+          <v-snackbar v-model="authSnackbar" color="success" :timeout='5000' bottom left>
+            <v-icon class="mr-3">check_circle</v-icon>
+            <h3>You are now signed in!</h3>
+            <v-btn dark text @click="authSnackbar = false">Close</v-btn>
+          </v-snackbar>
+
+          <!-- Auth Errors snackbar -->
+          <v-snackbar v-if="authError" v-model="authErrorSnackbar" color="info" :timeout='5000' bottom left>
+            <v-icon class="mr-3">cancel</v-icon>
+            <h3>{{ authError.message }}</h3>
+            <v-btn dark text to="/signin">Signin</v-btn>
+          </v-snackbar>
+
         </v-container>
       </main>
   </v-app>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: "App",
   data() {
     return {
-      sideNav: false
+      sideNav: false,
+      authSnackbar: false,
+      authErrorSnackbar: false
     };
   },
+  watch: {
+    user(newValue, oldValue) {
+      // check oldvalue
+      if (oldValue === null) {
+        this.authSnackbar = true;
+      }
+    },
+    authError(value) {
+      if (value !== null) {
+        this.authErrorSnackbar = true;
+      }
+    }
+  },
   computed: {
+    ...mapGetters(['authError', 'user']),
     horizontalNavItems() {
-      return [
+      let items = [
         { icon: "chat", title: "Posts", link: "/posts" },
         { icon: "lock_open", title: "Sign In", link: "/signin" },
         { icon: "create", title: "Sign Up", link: "/signup" }
       ];
+
+      if (this.user) {
+        items = [
+          { icon: "chat", title: "Posts", link: "/posts" },
+        ]
+      }
+
+      return items;
     },
     sideNavItems() {
-      return [
+      let items = [
         { icon: "chat", title: "Posts", link: "/posts" },
         { icon: "lock_open", title: "Sign In", link: "/signin" },
         { icon: "create", title: "Sign Up", link: "/signup" }
       ];
+
+      if (this.user) {
+        items = [
+            { icon: "chat", title: "Posts", link: "/posts" },
+            { icon: "stars", title: "Create Post", link: "/post/add" },
+            { icon: "account_box", title: "Profile", link: "/profile" },
+          ]
+      }
+
+      return items;
     }
   },
   methods: {
+    handleSignoutUser() {
+      this.$store.dispatch('signoutUser');
+    },
     toggleSideNav() {
       this.sideNav = !this.sideNav;
     }
