@@ -5,7 +5,7 @@
         <v-app-bar color="accent" dark text>
           <v-app-bar-nav-icon @click="toggleSideNav"></v-app-bar-nav-icon>
           <router-link to="/" tag="span" style="cursor: pointer">
-            <h1 class="title pl-3">VueShare</h1>
+            <h1 class="title pl-3">Vue Pics</h1>
           </router-link>
         </v-app-bar>
 
@@ -40,15 +40,38 @@
         <v-app-bar-nav-icon @click="toggleSideNav"></v-app-bar-nav-icon>
         <v-toolbar-title class="hidden-xs-only">
           <router-link to="/" tag="span" style="cursor: pointer">
-            VueShare
+            Vue Pics
           </router-link>
         </v-toolbar-title>
 
         <v-spacer></v-spacer>
 
         <!-- Search input -->
-        <v-text-field flex prepend-icon="search" placeholder="Search posts" color="accent" single-line hide-details>
+        <v-text-field 
+          v-model="searchTerm"
+          @input="handleSearchPosts"
+          prepend-icon="search"
+          placeholder="Search posts" 
+          color="accent" 
+          single-line hide-details flex>
         </v-text-field>
+
+        <!-- Search results card -->
+        <v-card dark v-if="searchResults.length" id="search__card">
+          <v-list>
+            <v-list-item @click="goToSearchResult(result._id)" v-for="result in searchResults" :key="result._id">
+              <v-list-item-title>
+                {{ result.title }}
+                <span class="font-weight-thin">{{ formatDescription(result.description) }}</span>
+              </v-list-item-title>
+
+              <!-- show icon if favorited by user -->
+              <v-list-item-action v-if="checkIfUserFavorite(result._id)">
+                <v-icon>favorite</v-icon>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+        </v-card>
 
         <v-spacer></v-spacer>
 
@@ -62,8 +85,8 @@
           <!-- Profile button -->
           <v-btn v-if="user" text to="/profile">
             <v-icon class="hidden-sm-only" left>account_box</v-icon>
-            <v-badge right color="blue darken2">
-              <!-- <span slot="badge">1</span> -->
+            <v-badge right color="blue darken2" :class="{'bounce': badgeAnimated }">
+              <span slot="badge">{{ userFavorites.length }}</span>
               Profile
             </v-badge>
           </v-btn>
@@ -113,7 +136,9 @@ export default {
     return {
       sideNav: false,
       authSnackbar: false,
-      authErrorSnackbar: false
+      authErrorSnackbar: false,
+      badgeAnimated: false,
+      searchTerm: ''
     };
   },
   watch: {
@@ -127,10 +152,15 @@ export default {
       if (value !== null) {
         this.authErrorSnackbar = true;
       }
+    },
+    userFavorites(value) {
+      // if the value changes
+      this.badgeAnimated = true;
+      setTimeout(() => (this.badgeAnimated = false), 1000);
     }
   },
   computed: {
-    ...mapGetters(['authError', 'user']),
+    ...mapGetters(['authError', 'user', 'userFavorites', 'searchResults']),
     horizontalNavItems() {
       let items = [
         { icon: "chat", title: "Posts", link: "/posts" },
@@ -165,6 +195,28 @@ export default {
     }
   },
   methods: {
+    handleSearchPosts() {
+      this.$store.dispatch('searchPosts', {
+        searchTerm: this.searchTerm
+      });
+    },
+    goToSearchResult(resultId) {
+      // clear search term
+      this.searchTerm = '';
+      // go to result
+      this.$router.push(`/posts/${resultId}`);
+      // clear search results
+      this.$store.commit('clearSearchResults');
+    },
+    formatDescription(desc) {
+      return desc.length > 30 ? `${desc.slice(0, 30)}...`: desc;
+    },
+    checkIfUserFavorite(resultId) {
+      return (
+        this.userFavorites && 
+        this.userFavorites.some(fave => fave._id === resultId)
+      );
+    },
     handleSignoutUser() {
       this.$store.dispatch('signoutUser');
     },
@@ -187,9 +239,41 @@ export default {
   transition-delay: 0.25s;
 }
 
-  .fade-enter,
-  .fade-leave-active {
-    opacity: 0;
-    /* transform: translateY(-25px); */
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+  /* transform: translateY(-25px); */
+}
+
+/* search results card */
+#search__card {
+  position: absolute;
+  width: 100vw;
+  z-index: 8;
+  top: 100%;
+  left: 0%;
+}
+
+/* user favorites animation */
+.bounce {
+  animation: bounce 1s both;
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
   }
+
+  40%, 43% {
+    transform: translate3d(0, -20px, 0);
+  }
+
+  70% {
+    transform: translate3d(0, -10px, 0);
+  }
+
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
 </style>
