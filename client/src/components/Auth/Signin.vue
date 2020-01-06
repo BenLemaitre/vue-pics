@@ -18,7 +18,7 @@
         <!-- Sign in form -->
         <v-layout row wrap>
             <v-flex xs12 sm6 offset-sm3>
-                <v-card color="secondary" dark>
+                <v-card color="accent" dark>
                     <v-container pl-8 pr-8>
                         <v-form @submit.prevent="handleSigninUser" v-model="isFormValid" lazy-validation ref="form" align="center">
 
@@ -38,14 +38,14 @@
 
                             <v-layout row>
                                 <v-flex xs12>
-                                    <v-btn :loading="loading"  :disabled="!isFormValid || loading" color="accent" type="submit">
+                                    <v-btn :loading="loading"  :disabled="!isFormValid || loading" color="secondary" type="submit">
                                         <span slot="loader" class="custom-loader">
                                             <v-icon light>cached</v-icon>
                                         </span>
                                         Signin
                                     </v-btn>
                                     <h3>Don't have an account ?
-                                        <router-link to="/signup">Signup</router-link>
+                                        <router-link color="white" to="/signup">Signup</router-link>
                                     </h3>
                                 </v-flex>
                             </v-layout>
@@ -108,40 +108,41 @@ export default {
 </script>
 
 <style>
-  .custom-loader {
+.custom-loader {
     animation: loader 1s infinite;
     display: flex;
-  }
-  @-moz-keyframes loader {
+}
+
+@-moz-keyframes loader {
+from {
+    transform: rotate(0);
+}
+    to {
+        transform: rotate(360deg);
+    }
+}
+@-webkit-keyframes loader {
     from {
-      transform: rotate(0);
+        transform: rotate(0);
     }
     to {
-      transform: rotate(360deg);
+        transform: rotate(360deg);
     }
-  }
-  @-webkit-keyframes loader {
+}
+@-o-keyframes loader {
     from {
-      transform: rotate(0);
+        transform: rotate(0);
     }
     to {
-      transform: rotate(360deg);
+        transform: rotate(360deg);
     }
-  }
-  @-o-keyframes loader {
+}
+@keyframes loader {
     from {
-      transform: rotate(0);
+        transform: rotate(0);
     }
     to {
-      transform: rotate(360deg);
+        transform: rotate(360deg);
     }
-  }
-  @keyframes loader {
-    from {
-      transform: rotate(0);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
+}
 </style>

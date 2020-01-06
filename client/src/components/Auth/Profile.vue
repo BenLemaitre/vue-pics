@@ -15,7 +15,7 @@
                                     {{ user.username }}
                                 </div>
                                 <div class="font-weight-regular">
-                                    {{ user.joinDate }}
+                                    {{ formatJoinDate(user.joinDate) }}
                                 </div>
                                 <div class="hidden-xs-only font-weight-thin">
                                     {{ user.favorites.length }} Favorites
@@ -50,7 +50,7 @@
             <v-layout row wrap>
                 <v-flex xs12 sm6 v-for="favorite in userFavorites" :key="favorite._id">
                     <v-card class="mt-3 ml-1 mr-2" hover>
-                        <v-img height="30vh" :src="favorite.imageUrl"></v-img>
+                        <v-img @click="goToPost(favorite._id)" height="30vh" :src="favorite.imageUrl"></v-img>
                         <v-card-text align="center">{{ favorite.title }}</v-card-text>
                     </v-card>
                 </v-flex>
@@ -82,7 +82,7 @@
                             <v-icon>delete</v-icon>
                         </v-btn>
 
-                        <v-img height="30vh" :src="post.imageUrl"></v-img>
+                        <v-img @click="goToPost(post._id)" height="30vh" :src="post.imageUrl"></v-img>
                         <v-card-text>{{ post.title }}</v-card-text>
                     </v-card>
                 </v-flex>
@@ -151,6 +151,8 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import moment from 'moment';
+
 export default {
     name: 'Profile',
     data() {
@@ -220,6 +222,12 @@ export default {
             this.imageUrl = imageUrl;
             this.categories = categories;
             this.description = description;
+        },
+        goToPost(id) {
+            this.$router.push(`/posts/${id}`);
+        },
+        formatJoinDate(date) {
+            return moment(new Date(date)).format('ll');
         }
     }
 }

@@ -10,6 +10,16 @@
         </v-container>
       </v-dialog>
     </v-layout>
+
+    <!-- Explore posts button -->
+    <v-flex xs12 mt-2 mb-3>
+      <v-layout column wrap v-if="!loading" align-center>
+        <v-btn class="secondary" to="/posts" large dark>
+          Explore posts
+        </v-btn>
+      </v-layout>
+    </v-flex>
+
     <!-- Carousel -->
     <v-flex xs12>
       <v-carousel v-if="!loading && posts.length > 0" v-bind="{ 'cycle': true }" interval="3000">
@@ -58,6 +68,7 @@ export default {
 <style>
   #carousel__title {
     position: absolute;
+    cursor: pointer;
     background-color: rgba(0, 0, 0, 0.3);
     color: white;
     border-radius: 5px 5px 0 0;

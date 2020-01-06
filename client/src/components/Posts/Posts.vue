@@ -29,7 +29,7 @@
 
                                 <v-list-item-content>
                                     <v-list-item-title class="text--primary">{{ post.createdBy.username }}</v-list-item-title>
-                                    <v-list-item-subtitle class="font-weight-thin">Added {{ post.createdDate }}
+                                    <v-list-item-subtitle class="font-weight-thin">Added {{ formatCreatedDate(post.createdDate) }}
                                     </v-list-item-subtitle>
                                 </v-list-item-content>
 
@@ -58,6 +58,7 @@
     </v-container>
 </template>
 <script>
+import moment from 'moment';
 import { INFINITE_SCROLL_POSTS } from '../../queries';
 
 const pageSize = 2;
@@ -67,7 +68,7 @@ export default {
     data() {
         return {
             pageNum: 1,
-            showMoreEnabled: true,
+            // showMoreEnabled: true,
             showPostCreator: false
         }
     },
@@ -78,6 +79,11 @@ export default {
                 pageNum: 1,
                 pageSize
             }
+        }
+    },
+    computed: {
+        showMoreEnabled() {
+            return this.infiniteScrollPosts && this.infiniteScrollPosts.hasMore;
         }
     },
     methods: {
@@ -93,7 +99,7 @@ export default {
                 updateQuery: (prevResult, { fetchMoreResult }) => {
                     const newPosts = fetchMoreResult.infiniteScrollPosts.posts;
                     const hasMore = fetchMoreResult.infiniteScrollPosts.hasMore;
-                    this.showMoreEnabled = hasMore;
+                    // this.showMoreEnabled = hasMore;
 
                     return {
                         infiniteScrollPosts: {
@@ -111,6 +117,9 @@ export default {
         },
         goToPost(postId) {
             this.$router.push(`/posts/${postId}`);
+        },
+        formatCreatedDate(date) {
+            return moment(new Date(date)).format('ll');
         }
     }
 }

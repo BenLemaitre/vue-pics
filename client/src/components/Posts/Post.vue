@@ -84,7 +84,7 @@
                                 <v-list-item-subtitle>
                                     {{ message.messageUser.username }}
                                     <span class="grey--text text--lighten1 hidden-xs-only">
-                                        {{ message.messageDate }}
+                                        {{ getTimeFromNow(message.messageDate) }}
                                     </span>
                                 </v-list-item-subtitle>
                             </v-list-item-content>
@@ -105,6 +105,7 @@
 <script>
 import { GET_POST, ADD_POST_MESSAGE, LIKE_POST, UNLIKE_POST } from '../../queries'
 import { mapGetters } from 'vuex'
+import moment from 'moment';
 
 export default {
     name: 'Post',
@@ -256,6 +257,9 @@ export default {
             }).catch(err => {
                 console.error(err);
             });
+        },
+        getTimeFromNow(time) {
+            return moment(new Date(time)).fromNow();
         }
     }
 }
