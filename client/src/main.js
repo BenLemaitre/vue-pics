@@ -1,10 +1,8 @@
-import '@babel/polyfill'
 import Vue from 'vue'
 import vuetify from './plugins/vuetify';
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 import ApolloClient from 'apollo-boost'
 import VueApollo from 'vue-apollo'
@@ -18,7 +16,7 @@ Vue.use(VueApollo);
 
 // Setup Apollo client
 export const defaultClient = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
+  uri: 'https://vue-pics.herokuapp.com/graphql',
   // include auth token with requests made to backend
   fetchOptions: {
     credentials: 'include'

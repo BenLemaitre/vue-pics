@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import 'vuetify/dist/vuetify.min.css';
+import 'vuetify/dist/vuetify.min.css'
 
 Vue.use(Vuetify);
 
@@ -16,8 +16,8 @@ const vuetify = new Vuetify({
         info: "#2196f3",
         success: "#8bc34a"
       },
-    },
-  },
+    }
+  }
 });
 
 export default vuetify;

@@ -100,7 +100,6 @@
         </v-toolbar-items>
       </v-app-bar>
 
-
       <!-- App Content -->
       <main>
         <v-container class="mt-12">
