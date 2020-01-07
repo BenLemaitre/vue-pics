@@ -12,6 +12,7 @@ Vue Pics is a simple picture sharing app using VueJS and GraphQL.
 
 ### Live Demo
 The project is hosted using zeit.co (now).
+
 <a href="https://vue-pics.benjaminlemaitre.now.sh/">Link</a>
 
 
